@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      version:
+        description: Release version for the published WASM app
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  dependency-report:
+    uses: ./.github/workflows/owasp-dependency-check.yml
+
+  build-test:
+    name: Build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Build all projects on Windows
+        if: runner.os == 'Windows'
+        run: dotnet build src/PdfNet.slnx --configuration Release
+      - name: Build portable projects
+        if: runner.os != 'Windows'
+        run: dotnet build tests/PdfNet.Tests/PdfNet.Tests.csproj --configuration Release
+      - name: Build folder merge app
+        run: dotnet build src/PdfNet.FolderMerge.cs --configuration Release -p:PublishAot=false
+      - name: Test with coverage
+        run: >-
+          dotnet test tests/PdfNet.Tests/PdfNet.Tests.csproj
+          --configuration Release --no-build
+          --logger "trx;LogFileName=tests.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory artifacts/test-results
+      - name: Upload test results and raw coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ runner.os }}
+          path: artifacts/test-results/
+          if-no-files-found: error
+  documentation:
+    name: Generate documentation and combined coverage
+    needs: build-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Download coverage from every platform
+        uses: actions/download-artifact@v8
+        with:
+          pattern: test-results-*
+          path: artifacts/test-results
+      - name: Restore documentation tools
+        run: dotnet tool restore
+      - name: Generate combined coverage documentation
+        shell: bash
+        run: |
+          dotnet reportgenerator \
+            "-reports:artifacts/test-results/**/coverage.opencover.xml" \
+            "-targetdir:artifacts/documentation/coverage" \
+            "-reporttypes:Html;MarkdownSummaryGithub;Cobertura" \
+            "-assemblyfilters:+PdfNet;+PdfNet.Tui;+PdfNet.Wasm"
+          cat artifacts/documentation/coverage/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Generate API documentation
+        run: dotnet docfx docs/docfx.json --warningsAsErrors
+      - name: Generate PDF documentation
+        run: dotnet docfx pdf docs/docfx.json --warningsAsErrors
+      - name: Generate documentation artifact index
+        run: dotnet run GenerateContent.cs -- --index-only --no-serve
+      - name: Upload documentation
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation
+          path: artifacts/documentation/
+          if-no-files-found: error
+
+  website:
+    name: Publish WASM, documentation, and dependency report
+    needs: [documentation, dependency-report]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish browser app
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          version_args=()
+          if [[ -n "$VERSION" ]]; then
+            version_args+=("-p:Version=$VERSION")
+          fi
+          dotnet publish src/PdfNet.Wasm/PdfNet.Wasm.csproj --configuration Release \
+            "${version_args[@]}" --output artifacts/wasm
+      - uses: actions/download-artifact@v8
+        with:
+          name: documentation
+          path: artifacts/documentation
+      - name: Include API docs without publishing source-bearing coverage reports
+        run: cp -R artifacts/documentation/docs artifacts/wasm/wwwroot/docs
+      - name: Include self-contained marketing site
+        run: cp -R site artifacts/wasm/wwwroot/site
+      - name: Include dependency vulnerability report
+        uses: actions/download-artifact@v8
+        with:
+          name: dependency-check-report
+          path: artifacts/wasm/wwwroot/dependency-check
+      - name: Add dependency report landing page
+        run: cp artifacts/wasm/wwwroot/dependency-check/dependency-check-report.html artifacts/wasm/wwwroot/dependency-check/index.html
+      - name: Upload website
+        uses: actions/upload-artifact@v7
+        with:
+          name: website
+          path: artifacts/wasm/wwwroot/
+          if-no-files-found: error

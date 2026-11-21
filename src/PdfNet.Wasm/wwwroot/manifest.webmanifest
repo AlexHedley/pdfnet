@@ -1,0 +1,16 @@
+{
+  "name": "PdfNet PDF Merger",
+  "short_name": "PdfNet",
+  "description": "Merge PDFs locally in your browser.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f6f3",
+  "theme_color": "#26734c",
+  "icons": [
+    {
+      "src": "assets/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

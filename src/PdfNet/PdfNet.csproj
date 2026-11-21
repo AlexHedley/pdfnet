@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageId>PdfNet</PackageId>
+    <Version>0.1.0</Version>
+    <Description>A dependency-free .NET library for merging PDF documents.</Description>
+    <PackageTags>pdf;merge;combine;dependency-free</PackageTags>
+  </PropertyGroup>
+
+</Project>

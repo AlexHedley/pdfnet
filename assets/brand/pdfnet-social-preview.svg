@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title">
+  <title id="title">PdfNet — Merge PDFs, your way</title>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#102c24"/>
+      <stop offset="1" stop-color="#26734c"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#dcebe0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="22" stdDeviation="18" flood-color="#06170f" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <circle cx="1060" cy="60" r="290" fill="#73ad83" opacity=".12"/>
+  <circle cx="150" cy="650" r="280" fill="#a2cbb0" opacity=".08"/>
+  <g transform="translate(82 82)">
+    <rect width="70" height="70" rx="18" fill="#f3fbf5"/>
+    <path d="M9 15h18v23H9zM9 40h18v16H9z" fill="#d0ead7"/>
+    <path d="M13 22h10M13 27h10M13 46h10M13 51h10" stroke="#26734c" stroke-linecap="round" stroke-width="2"/>
+    <path d="M27 27h6c5 0 5 8 11 8M27 47h6c5 0 5-8 11-8" fill="none" stroke="#78a987" stroke-linecap="round" stroke-width="2"/>
+    <path d="m42 32 5 5-5 5" fill="none" stroke="#78a987" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path d="M49 22h13v30H49z" fill="#26734c"/>
+    <path d="M53 30h6M53 35h6M53 40h6M53 45h6" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+    <text x="88" y="52" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="40" font-weight="750">PdfNet</text>
+  </g>
+  <text x="82" y="286" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="72" font-weight="750" letter-spacing="-2">Merge PDFs,</text>
+  <text x="82" y="368" fill="#d0ead7" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="72" font-weight="750" letter-spacing="-2">your way.</text>
+  <text x="86" y="426" fill="#e1efe4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25">A lightweight .NET library with apps for every workflow.</text>
+  <g transform="translate(82 486)" fill="#eff8f1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700">
+    <rect width="138" height="42" rx="21" fill="#ffffff" fill-opacity=".15"/>
+    <text x="69" y="27" text-anchor="middle">LIBRARY</text>
+    <rect x="152" width="154" height="42" rx="21" fill="#ffffff" fill-opacity=".15"/>
+    <text x="229" y="27" text-anchor="middle">DESKTOP</text>
+    <rect x="320" width="148" height="42" rx="21" fill="#ffffff" fill-opacity=".15"/>
+    <text x="394" y="27" text-anchor="middle">BROWSER</text>
+  </g>
+  <g transform="translate(777 155)" filter="url(#shadow)">
+    <rect x="36" y="28" width="246" height="310" rx="20" fill="#c6dfcd" opacity=".75" transform="rotate(10 159 183)"/>
+    <rect x="4" y="2" width="246" height="310" rx="20" fill="url(#paper)"/>
+    <path d="M174 2v75h76" fill="#c8e4d0"/>
+    <path d="M53 119h148M53 153h148M53 187h111" stroke="#729b7b" stroke-linecap="round" stroke-width="13"/>
+    <circle cx="204" cy="266" r="57" fill="#26734c"/>
+    <path d="m176 266 20 20 37-41" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+    <path d="M275 193h78v97h-78" fill="none" stroke="#a9d2b4" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"/>
+    <path d="m313 217 25 24-25 24" fill="none" stroke="#a9d2b4" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"/>
+  </g>
+  <text x="1112" y="584" fill="#d2e8d8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" text-anchor="end">PDF MERGING FOR .NET 10</text>
+</svg>

@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'PdfNet.Wasm' Or '$(MSBuildProjectName)' == 'PdfNet.WinForms' Or '$(MSBuildProjectName)' == 'PdfNet.Wpf' Or '$(MSBuildProjectName)' == 'PdfNet.WinUI'">
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'PdfNet' Or '$(MSBuildProjectName)' == 'PdfNet.Tui'">
+    <Authors>alexhedley</Authors>
+    <PackageProjectUrl>https://github.com/alexhedley/pdfnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alexhedley/pdfnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>pdfnet-icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'PdfNet' Or '$(MSBuildProjectName)' == 'PdfNet.Tui'">
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)../assets/brand/pdfnet-icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

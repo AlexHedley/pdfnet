@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#164b38">
+  <meta name="description" content="One PDF, less friction. Merge documents locally with PdfNet's browser, Windows, terminal and folder tools, or build with the .NET library.">
+  <meta property="og:title" content="PdfNet | One PDF. Less friction.">
+  <meta property="og:description" content="Simple PDF merging, wherever you work. Explore the browser, desktop and command-line apps, plus the .NET library.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://alexhedley.github.io/pdfnet/site/assets/pdfnet-social-preview.png">
+  <title>PdfNet | One PDF. Less friction.</title>
+  <link rel="icon" href="assets/pdfnet-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="PdfNet home"><img src="assets/pdfnet-logo.svg" width="760" height="176" alt="PdfNet PDF tools"></a>
+      <button class="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false" hidden>Menu <span aria-hidden="true">+</span></button>
+      <nav id="navigation" aria-label="Main navigation">
+        <a href="#apps">The apps</a>
+        <a href="#how-to">How to use</a>
+        <a href="https://alexhedley.github.io/pdfnet/docs/">Docs <span aria-hidden="true">&#8599;</span></a>
+        <a class="button button-small" href="https://alexhedley.github.io/pdfnet/">Open browser app <span aria-hidden="true">&#8599;</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> SMALL TOOLS. SIMPLER DOCUMENTS.</p>
+        <h1 id="hero-title">One PDF.<br><em>Less friction.</em></h1>
+        <p class="lead">Bring your documents together, without the extra steps. Simple PDF merging in your browser, on your desktop, or from your terminal.</p>
+        <div class="button-row">
+          <a class="button" href="https://alexhedley.github.io/pdfnet/">Merge in your browser <span aria-hidden="true">&#8599;</span></a>
+          <a class="button button-outline" href="#apps">Find your app <span aria-hidden="true">&#8595;</span></a>
+        </div>
+        <p class="hero-note">No install for the browser app. No document uploads.</p>
+      </div>
+      <div class="hero-art" aria-label="Illustration: three PDF documents combined into one">
+        <div class="art-heading"><span class="status-dot" aria-hidden="true"></span> A LITTLE LESS PAPERWORK</div>
+        <div class="paper-stack" aria-hidden="true">
+          <div class="paper paper-back"><span class="paper-label">REPORT</span><div class="paper-lines"></div></div>
+          <div class="paper paper-middle"><span class="paper-label">INVOICE</span><div class="paper-lines"></div></div>
+          <div class="paper paper-front"><span class="paper-label">PDF / 01</span><strong>Better<br>together.</strong><div class="paper-lines"></div><span class="paper-footer">YOUR DOCUMENTS, COMBINED</span></div>
+        </div>
+        <div class="merge-stamp"><span aria-hidden="true">&#10003;</span> One tidy file</div>
+        <div class="art-footer"><span>REPORT + INVOICE + NOTES</span><span aria-hidden="true">&#8594;</span><strong>merged.pdf</strong></div>
+      </div>
+    </section>
+
+    <div class="principles">
+      <div class="container principles-inner">
+        <p><span aria-hidden="true">&#9678;</span> <strong>Local processing</strong> Your files stay with you.</p>
+        <p><span aria-hidden="true">&#8594;</span> <strong>Predictable order</strong> Pages follow your inputs.</p>
+        <p><span aria-hidden="true">&#123;&#125;</span> <strong>One .NET core</strong> Different ways to work.</p>
+      </div>
+    </div>
+
+    <section class="section container" id="apps" aria-labelledby="apps-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE PDFNET TOOLKIT</p><h2 id="apps-title">Your workflow.<br>Your kind of app.</h2></div>
+        <p>From a quick browser merge to a repeatable folder task. Pick the tool that fits the way you work.</p>
+      </div>
+      <div class="app-grid">
+        <article class="app-card app-featured">
+          <div class="featured-copy">
+            <div class="card-top"><span class="app-symbol" aria-hidden="true">&#9678;</span><span class="tag">NO INSTALL NEEDED</span></div>
+            <h3>In your browser</h3>
+            <p>The quickest way to turn a handful of PDFs into one. Powered by Blazor WebAssembly, with all merging done on your device.</p>
+            <p class="platform">A modern browser &middot; Windows, macOS or Linux</p>
+            <div class="card-links"><a href="https://alexhedley.github.io/pdfnet/">Open browser app <span aria-hidden="true">&#8599;</span></a><a href="#guide-browser">How to use <span aria-hidden="true">&#8594;</span></a></div>
+          </div>
+          <figure class="browser-preview">
+            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><small>PdfNet / Browser</small></div>
+            <img src="assets/pdfnet-wasm-selected.png" width="780" height="980" alt="Blazor app showing the PDF drop area, selected files with up/down controls, and Merge and download">
+            <figcaption>The real app. Your files never leave your browser.</figcaption>
+          </figure>
+        </article>
+        <article class="app-card">
+          <div class="card-top"><span class="app-symbol" aria-hidden="true">&#9638;</span><span class="tag">WINDOWS</span></div>
+          <h3>WPF desktop</h3>
+          <p>A native Windows window for selecting PDFs, saving a combined file, and opening it in your default viewer.</p>
+          <p class="platform">Point, click, merge, open.</p>
+          <div class="card-links"><a href="#guide-wpf">How to use <span aria-hidden="true">&#8594;</span></a><a href="https://github.com/alexhedley/pdfnet/releases">Get the app <span aria-hidden="true">&#8599;</span></a></div>
+        </article>
+        <article class="app-card">
+          <div class="card-top"><span class="app-symbol" aria-hidden="true">&#8862;</span><span class="tag">WINDOWS</span></div>
+          <h3>WinForms desktop</h3>
+          <p>Prefer a classic Windows interface? The same straightforward merge-and-open workflow, in a familiar form.</p>
+          <p class="platform">A classic UI. The same PDF engine.</p>
+          <div class="card-links"><a href="#guide-winforms">How to use <span aria-hidden="true">&#8594;</span></a><a href="https://github.com/alexhedley/pdfnet/releases">Get the app <span aria-hidden="true">&#8599;</span></a></div>
+        </article>
+        <article class="app-card">
+          <div class="card-top"><span class="app-symbol" aria-hidden="true">&#9638;</span><span class="tag">WINDOWS</span></div>
+          <h3>WinUI desktop</h3>
+          <p>A modern Windows App SDK interface with the same ordered PDF selection, merge, and open workflow.</p>
+          <p class="platform">A modern UI. The same PDF engine.</p>
+          <div class="card-links"><a href="#guide-winui">How to use <span aria-hidden="true">&#8594;</span></a><a href="https://github.com/alexhedley/pdfnet/releases">Get the app <span aria-hidden="true">&#8599;</span></a></div>
+        </article>
+        <article class="app-card">
+          <div class="card-top"><span class="app-symbol mono" aria-hidden="true">&gt;_</span><span class="tag">CROSS-PLATFORM</span></div>
+          <h3>Terminal app</h3>
+          <p>A small, interactive menu. Add and reorder PDF paths, choose your destination, and merge without leaving the terminal.</p>
+          <p class="platform">Linux &middot; Windows &middot; macOS</p>
+          <div class="card-links"><a href="#guide-terminal">How to use <span aria-hidden="true">&#8594;</span></a><a href="https://github.com/alexhedley/pdfnet/releases">Get the app <span aria-hidden="true">&#8599;</span></a></div>
+        </article>
+        <article class="app-card">
+          <div class="card-top"><span class="app-symbol" aria-hidden="true">&#8984;</span><span class="tag">BATCH-FRIENDLY</span></div>
+          <h3>Folder merge</h3>
+          <p>One folder in, one PDF out. Combine its top-level PDFs in filename order with a single command.</p>
+          <p class="platform">Linux &middot; Windows &middot; macOS</p>
+          <div class="card-links"><a href="#guide-folder">How to use <span aria-hidden="true">&#8594;</span></a><a href="https://github.com/alexhedley/pdfnet/releases">Get the app <span aria-hidden="true">&#8599;</span></a></div>
+        </article>
+      </div>
+      <aside class="library-banner">
+        <span class="app-symbol mono" aria-hidden="true">{ }</span>
+        <div><h3>Building something of your own?</h3><p>The PdfNet .NET 10 library merges files, byte arrays, or streams in your C# app.</p></div>
+        <a href="#guide-library">Meet the library <span aria-hidden="true">&#8594;</span></a>
+      </aside>
+    </section>
+
+    <section class="guide-section" id="how-to" aria-labelledby="guides-title">
+      <div class="container guide-layout">
+        <div class="guide-intro">
+          <p class="eyebrow">FROM FILES TO FINISHED</p>
+          <h2 id="guides-title">A few steps.<br>One document.</h2>
+          <p>Every app uses the same merge engine. Pages are appended in input order; the folder tool chooses that order by filename.</p>
+          <div class="download-note"><strong>Getting the native apps</strong><p>Choose the matching app and platform archive from a GitHub release. Extract the entire archive before running it. These self-contained apps do not need a separate .NET installation.</p><a href="https://github.com/alexhedley/pdfnet/releases">Browse releases <span aria-hidden="true">&#8599;</span></a></div>
+          <p class="source-note">The commands below run from a cloned repository and require the <strong>.NET 10 SDK</strong>. The Windows desktop projects also require Windows.</p>
+        </div>
+        <div class="guides">
+          <details id="guide-browser" open>
+            <summary><span><span class="guide-number">01</span> Browser app</span><span class="guide-platform">BLAZOR / WASM</span></summary>
+            <div class="guide-content">
+              <ol><li><a href="https://alexhedley.github.io/pdfnet/">Open the Blazor app</a> and select <strong>Choose PDF files</strong>, or drop PDFs onto the file-picker area. Repeat to add more files.</li><li>Use the up/down arrows beside each PDF to arrange the numbered merge order. Remove unwanted files or clear the list if needed.</li><li>Select <strong>Merge and download</strong>. Save the downloaded <code>merged.pdf</code>.</li></ol>
+              <p class="callout">Up to 100 PDFs, 100 MB per file, and 200 MB total. Non-PDF selections are rejected without changing the existing list. Documents are processed locally, not uploaded to a server. Reloading the page clears the selection.</p>
+              <p>To run from source:</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.Wasm</code></pre></div>
+            </div>
+          </details>
+          <details id="guide-wpf">
+            <summary><span><span class="guide-number">02</span> WPF desktop app</span><span class="guide-platform">WINDOWS</span></summary>
+            <div class="guide-content">
+              <ol><li>Extract the WPF Windows release archive and launch <code>PdfNet.Wpf.exe</code>, or run the source command below.</li><li>Select <strong>Add PDFs...</strong> to build your input list. Select PDFs and use <strong>Move up</strong> or <strong>Move down</strong> to arrange the merge order; use <strong>Remove selected</strong> for unwanted inputs.</li><li>Select <strong>Merge and open</strong>, choose a destination PDF, and save. The result opens in your default PDF viewer.</li></ol>
+              <p class="callout">Multiple selected PDFs move together, preserving their relative order; movement stops at the beginning or end of the list. Choose an output path different from every selected input. The app rejects a destination that would overwrite one of its sources.</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.Wpf</code></pre></div>
+            </div>
+          </details>
+          <details id="guide-winforms">
+            <summary><span><span class="guide-number">03</span> WinForms desktop app</span><span class="guide-platform">WINDOWS</span></summary>
+            <div class="guide-content">
+              <ol><li>Extract the WinForms Windows release archive and launch <code>PdfNet.WinForms.exe</code>, or run the source command below.</li><li>Use <strong>Add PDFs...</strong> to select your documents. Select PDFs and use <strong>Move up</strong> or <strong>Move down</strong> to arrange the merge order; use <strong>Remove selected</strong> to remove any you do not need.</li><li>Click <strong>Merge and open</strong>, choose where to save the PDF, and let your default viewer open the result.</li></ol>
+              <p class="callout">Multiple selected PDFs keep their relative order when moved; movement stops at either end of the list. Like the WPF app, WinForms prevents you from saving the merged file over a selected input.</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.WinForms</code></pre></div>
+            </div>
+          </details>
+          <details id="guide-winui">
+            <summary><span><span class="guide-number">04</span> WinUI desktop app</span><span class="guide-platform">WINDOWS</span></summary>
+            <div class="guide-content">
+              <ol><li>Extract the WinUI Windows release archive and launch <code>PdfNet.WinUI.exe</code>, or run the source command below.</li><li>Select <strong>Add PDFs...</strong> to add documents. Select PDFs and use <strong>Move up</strong> or <strong>Move down</strong> to arrange their merge order; use <strong>Remove selected</strong> to remove inputs.</li><li>Select <strong>Merge and open</strong>, choose a destination PDF, and save. The result opens in your default PDF viewer.</li></ol>
+              <p class="callout">Selected PDFs move together, preserving their relative order; movement stops at the beginning or end of the list. The app rejects a destination that would overwrite one of its inputs.</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.WinUI</code></pre></div>
+            </div>
+          </details>
+          <details id="guide-terminal">
+            <summary><span><span class="guide-number">05</span> Terminal app</span><span class="guide-platform">INTERACTIVE</span></summary>
+            <div class="guide-content">
+              <ol><li>Extract the terminal archive for your platform and run <code>./PdfNet.Tui</code> (or <code>PdfNet.Tui.exe</code> on Windows), or use the source command below.</li><li>Choose <strong>1. Add PDF</strong> and enter a path. Use <strong>2. Move PDF</strong> to enter a PDF's current number and its new position. Option <strong>3</strong> removes the last PDF in the displayed order.</li><li>Choose <strong>4. Set output folder</strong>, enter an existing folder such as <code>./reports</code>, then choose <strong>5. Merge PDFs</strong> to save <code>merged.pdf</code> inside it. Option <strong>6</strong> exits.</li></ol>
+              <p class="callout">Paths may be surrounded by matching single or double quotes, including Windows paths such as <code>"D:\PDF files\input.pdf"</code>. Choose an existing writable output folder, not a filename. The app protects selected inputs from being overwritten. Relative paths start at the app's current working directory. Merge exceptions appear in red in the terminal; redirected output remains plain text.</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.Tui</code></pre></div>
+              <p>To skip the menu, pass an existing output folder and individual PDFs in merge order. The result is <code>merged.pdf</code> in that folder; use <code>--help</code> for usage.</p>
+              <div class="code-block"><pre><code>dotnet run --project src/PdfNet.Tui -- --output ./results "cover page.pdf" report.pdf</code></pre></div>
+              <figure class="terminal-preview"><img src="assets/pdfnet-tui.svg" alt="ASCII PdfNet banner and terminal menu with cyan Inputs/Output labels and grey unset output" loading="lazy"><figcaption>A simple menu, not a command to memorize.</figcaption></figure>
+              <p><strong>Prefer a global tool?</strong> Download both the <code>PdfNet.Tui</code> and <code>PdfNet</code> NuGet packages from the same release into <code>./downloads</code>. Replace <code>0.1.0</code> below with that release's version. This option needs the .NET 10 runtime.</p>
+              <div class="code-block"><pre><code>dotnet tool install --global PdfNet.Tui --version 0.1.0 --add-source ./downloads
+pdfnet</code></pre></div>
+            </div>
+          </details>
+          <details id="guide-folder">
+            <summary><span><span class="guide-number">06</span> Folder merge</span><span class="guide-platform">ONE COMMAND</span></summary>
+            <div class="guide-content">
+              <ol><li>Put your PDFs in one directory. Files are sorted by filename, case-insensitively; use names such as <code>01-cover.pdf</code> and <code>02-report.pdf</code> to control the order.</li><li>Run the folder tool with that directory. The default output is <code>merged.pdf</code> inside it. Supply a second argument for a different destination.</li><li>Open the combined PDF. The destination is excluded from the input list, so subsequent runs will not merge it into itself.</li></ol>
+              <p>From source:</p>
+              <div class="code-block"><pre><code>dotnet run --file src/PdfNet.FolderMerge.cs -- ./reports
+dotnet run --file src/PdfNet.FolderMerge.cs -- ./reports ./combined.pdf</code></pre></div>
+              <p>Or extract the folder-merge archive and run its executable:</p>
+              <div class="code-block"><pre><code>./PdfNet.FolderMerge ./reports ./combined.pdf</code></pre></div>
+              <p>On Windows, use <code>PdfNet.FolderMerge.exe</code> instead.</p>
+              <p class="callout">Only top-level PDFs are included, not subfolders. Omit the directory to use the current directory. An explicit relative output path starts at the current working directory, not the input folder. A folder without PDFs produces an error.</p>
+            </div>
+          </details>
+          <details id="guide-library">
+            <summary><span><span class="guide-number">07</span> The .NET library</span><span class="guide-platform">FOR DEVELOPERS</span></summary>
+            <div class="guide-content">
+              <p>Use the same engine in your own .NET 10 application. In a cloned repository, add a project reference (adjust the paths for your app):</p>
+              <div class="code-block"><pre><code>dotnet add ./YourApp/YourApp.csproj reference ./src/PdfNet/PdfNet.csproj</code></pre></div>
+              <p>Alternatively, download the <code>PdfNet</code> NuGet package from a release and use that folder as a local package source. Packages are not automatically published to NuGet.org.</p>
+              <p>Merge files in the order you supply them:</p>
+              <div class="code-block"><pre><code>using PdfNet;
+
+PdfMerger.Merge(["cover.pdf", "report.pdf"], "merged.pdf");</code></pre></div>
+              <p>Working in memory? Use byte arrays or streams, with optional document metadata:</p>
+              <div class="code-block"><pre><code>byte[] merged = PdfMerger.Merge([
+    File.ReadAllBytes("cover.pdf"),
+    File.ReadAllBytes("report.pdf")
+]);
+
+using var output = File.Create("merged.pdf");
+PdfMerger.Merge([streamA, streamB], output, new PdfMergeOptions
+{
+    Title = "Combined report",
+    Author = "Your team",
+    SkipEmptyDocuments = true
+});</code></pre></div>
+              <p class="callout">File-based merges replace the destination only after success. The stream overload leaves your streams open. Unreadable inputs throw <code>PdfMergeException</code>; missing files throw <code>FileNotFoundException</code>.</p>
+              <a href="https://alexhedley.github.io/pdfnet/docs/">Read the API reference <span aria-hidden="true">&#8599;</span></a>
+            </div>
+          </details>
+          <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container resources" aria-labelledby="resources-title">
+      <div><p class="eyebrow">GO A LITTLE DEEPER</p><h2 id="resources-title">Small tools.<br>Clear documentation.</h2></div>
+      <div class="resource-links">
+        <a href="https://alexhedley.github.io/pdfnet/docs/"><span><strong>API documentation</strong><small>Types, overloads, options, and exceptions.</small></span><span aria-hidden="true">&#8599;</span></a>
+        <a href="https://github.com/alexhedley/pdfnet"><span><strong>Explore the source</strong><small>Apps, library, build instructions, and tests.</small></span><span aria-hidden="true">&#8599;</span></a>
+        <a href="https://github.com/alexhedley/pdfnet/releases"><span><strong>Downloads &amp; releases</strong><small>Native apps, NuGet packages, and website archives.</small></span><span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </section>
+
+    <section class="final-cta container" aria-labelledby="cta-title">
+      <div><p class="eyebrow">LESS ADMIN. MORE DONE.</p><h2 id="cta-title">Bring it all together.</h2><p>Your next combined PDF is a few clicks away.</p></div>
+      <a class="button button-light" href="https://alexhedley.github.io/pdfnet/">Open browser app <span aria-hidden="true">&#8599;</span></a>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <a class="brand" href="#top" aria-label="PdfNet home"><img src="assets/pdfnet-logo.svg" width="760" height="176" alt="PdfNet PDF tools" loading="lazy"></a>
+    <p>Simple PDF tools. Powered by .NET.</p>
+    <a href="https://github.com/alexhedley/pdfnet">GitHub <span aria-hidden="true">&#8599;</span></a>
+  </footer>
+</body>
+</html>

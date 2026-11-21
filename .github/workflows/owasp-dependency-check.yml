@@ -1,0 +1,40 @@
+name: OWASP Dependency Check
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Generate dependency vulnerability report
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore all solution dependencies for scanning
+        run: >-
+          dotnet restore src/PdfNet.slnx
+          -p:EnableWindowsTargeting=true
+          --packages artifacts/dependency-packages
+      - name: Scan restored NuGet package metadata
+        uses: dependency-check/Dependency-Check_Action@1e54355a8b4c8abaa8cc7d0b70aa655a3bb15a6c
+        with:
+          project: PdfNet
+          path: artifacts/dependency-packages
+          format: HTML
+          out: artifacts/dependency-check
+          # Restored .nuspec files identify packages without assembly or archive analysis.
+          args: --disableAssembly --disableArchive
+      - name: Upload dependency report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dependency-check-report
+          path: artifacts/dependency-check/
+          if-no-files-found: error

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="740" viewBox="0 0 1000 740">
+  <rect width="1000" height="740" fill="#171923"/>
+  <path d="M0 0h1000v44H0z" fill="#2d3748"/>
+  <circle cx="24" cy="22" r="7" fill="#fc8181"/>
+  <circle cx="48" cy="22" r="7" fill="#f6e05e"/>
+  <circle cx="72" cy="22" r="7" fill="#68d391"/>
+  <text x="500" y="28" fill="#cbd5e0" font-family="monospace" font-size="15" text-anchor="middle">PDFnet — PDF Merger</text>
+  <g fill="#67e8f9" font-family="monospace" font-size="16" xml:space="preserve">
+    <text x="56" y="78">____  ____  _____               _</text>
+    <text x="56" y="98">|  _ \|  _ \|  ___|  _ __   ___ | |_</text>
+    <text x="56" y="118">| |_) | | | | |_    | '_ \ / _ \| __|</text>
+    <text x="56" y="138">|  __/| |_| |  _|   | | | |  __/| |_</text>
+    <text x="56" y="158">|_|   |____/|_|     |_| |_|\___| \__|</text>
+  </g>
+  <g transform="translate(0 100)" fill="#e2e8f0" font-family="monospace" font-size="20">
+    <text x="56" y="100">PDFnet — PDF Merger</text>
+    <text x="56" y="145"><tspan fill="#67e8f9">Inputs:</tspan> 0</text>
+    <text x="56" y="181"><tspan fill="#67e8f9">Output:</tspan> <tspan fill="#9ca3af">(not set)</tspan></text>
+    <text x="56" y="236">1. Add PDF</text>
+    <text x="56" y="273">2. Move PDF</text>
+    <text x="56" y="310">3. Remove last PDF</text>
+    <text x="56" y="347">4. Set output folder</text>
+    <text x="56" y="384">5. Merge PDFs</text>
+    <text x="56" y="421">6. Exit</text>
+    <text x="56" y="482" fill="#68d391">Select an option: <tspan fill="#f7fafc">█</tspan></text>
+  </g>
+</svg>

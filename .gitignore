@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+.env
+
+artifacts/
+
+docs/api/
+docs/api-*/
+
+.vs/
