@@ -1,0 +1,228 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using PdfNet.Wasm
+@using System.IO
+@using System.Reflection
+@inject IJSRuntime JS
+
+<PageTitle>PDF Merger</PageTitle>
+
+<main class="merge-page">
+    <section class="merge-card">
+        <img class="brand-logo" src="assets/brand/pdfnet-logo.svg" alt="PdfNet PDF tools" />
+        <p class="eyebrow">PDFNET · PRIVATE IN-BROWSER MERGING</p>
+        <h1>Merge PDF files</h1>
+        <p class="intro">Choose PDFs from your device, arrange them in merge order, and download one combined file. Your documents stay in this browser.</p>
+
+        @foreach (var batch in _fileBatches)
+        {
+            <div @key="batch" hidden="@(batch.Count > 0)">
+                <label class="file-picker">
+                    <InputFile OnChange="args => AddFiles(args, batch)" multiple accept=".pdf,application/pdf" disabled="@(_isMerging || batch.Count > 0)" />
+                    <span class="picker-title">Choose PDF files</span>
+                    <span class="picker-hint">Select or drop one or more .pdf documents here</span>
+                </label>
+            </div>
+        }
+
+        @if (_files.Count > 0)
+        {
+            <div class="file-heading">
+                <h2>Selected files <span>@_files.Count</span></h2>
+                <button class="text-button" @onclick="ClearFiles" disabled="@_isMerging">Clear all</button>
+            </div>
+            <ol class="file-list">
+                @for (var index = 0; index < _files.Count; index++)
+                {
+                    var item = _files[index];
+                    <li @key="item">
+                        <span class="file-number">@(index + 1)</span>
+                        <span class="file-name" title="@item.Name">@item.Name</span>
+                        <span class="file-size">@FormatSize(item.Size)</span>
+                        <span class="file-controls">
+                            <button class="move-button" title="Move @item.Name up" aria-label="Move @item.Name up" @onclick="() => MoveFile(item, -1)" disabled="@(_isMerging || index == 0)">&#8593;</button>
+                            <button class="move-button" title="Move @item.Name down" aria-label="Move @item.Name down" @onclick="() => MoveFile(item, 1)" disabled="@(_isMerging || index == _files.Count - 1)">&#8595;</button>
+                            <button class="remove-button" title="Remove @item.Name" aria-label="Remove @item.Name" @onclick="() => RemoveFile(item)" disabled="@_isMerging">×</button>
+                        </span>
+                    </li>
+                }
+            </ol>
+        }
+        else
+        {
+            <div class="empty-state">No PDFs selected yet.</div>
+        }
+
+        <div class="actions">
+            <span class="status @(_hasError ? "error" : "")" role="status">@_status</span>
+            <button class="merge-button" @onclick="MergeAndDownload" disabled="@(_isMerging || _files.Count == 0)">
+                @(_isMerging ? "Merging…" : "Merge and download")
+            </button>
+        </div>
+        <p class="privacy-note">Files are processed locally. Nothing is uploaded.</p>
+        <footer class="app-footer">
+            <span>PdfNet v@(Version)</span>
+            <a class="copilot-badge" href="https://github.com/features/copilot" aria-label="Made with GitHub Copilot">
+                <img src="https://img.shields.io/badge/Made%20with-GitHub%20Copilot-276749?logo=githubcopilot&amp;logoColor=white" alt="Made with GitHub Copilot" referrerpolicy="no-referrer" />
+            </a>
+        </footer>
+    </section>
+</main>
+
+@code {
+    private static string Version => typeof(Home).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion.Split('+')[0];
+    private const string DownloadHelper = "pdfnetDownload";
+    private readonly List<IBrowserFile> _files = [];
+    // Keep each input alive until its files are removed: selecting again invalidates its old file IDs.
+    private readonly List<List<IBrowserFile>> _fileBatches = [[]];
+    private bool _isMerging;
+    private bool _hasError;
+    private string _status = "Add at least one PDF to get started.";
+
+    private void AddFiles(InputFileChangeEventArgs eventArgs, List<IBrowserFile> batch)
+    {
+        if (_files.Count >= PdfMergeBrowserService.MaxFileCount)
+        {
+            _status = $"You can select up to {PdfMergeBrowserService.MaxFileCount} PDF files.";
+            _hasError = true;
+            return;
+        }
+
+        IReadOnlyList<IBrowserFile> selectedFiles;
+        try
+        {
+            selectedFiles = eventArgs.GetMultipleFiles(PdfMergeBrowserService.MaxFileCount - _files.Count);
+        }
+        catch (InvalidOperationException)
+        {
+            _status = $"You can select up to {PdfMergeBrowserService.MaxFileCount} PDF files.";
+            _hasError = true;
+            return;
+        }
+
+        if (selectedFiles.Count == 0)
+        {
+            return;
+        }
+
+        if (selectedFiles.Any(file => !file.Name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase)))
+        {
+            _status = "Choose or drop PDF files only.";
+            _hasError = true;
+            return;
+        }
+
+        batch.AddRange(selectedFiles);
+        _files.AddRange(selectedFiles);
+        _fileBatches.Add([]);
+        _status = $"{_files.Count} PDF file(s) selected.";
+        _hasError = false;
+    }
+
+    private void RemoveFile(IBrowserFile file)
+    {
+        _files.Remove(file);
+        _fileBatches.RemoveAll(batch => batch.Count > 0 && !batch.Any(_files.Contains));
+        _status = _files.Count == 0 ? "Add at least one PDF to get started." : $"{_files.Count} PDF file(s) selected.";
+        _hasError = false;
+    }
+
+    private void ClearFiles()
+    {
+        _files.Clear();
+        _fileBatches.Clear();
+        _fileBatches.Add([]);
+        _status = "Add at least one PDF to get started.";
+        _hasError = false;
+    }
+
+    private void MoveFile(IBrowserFile file, int direction)
+    {
+        var index = _files.IndexOf(file);
+        var destination = index + direction;
+        if (_isMerging || index < 0 || destination < 0 || destination >= _files.Count)
+        {
+            return;
+        }
+
+        (_files[index], _files[destination]) = (_files[destination], _files[index]);
+        _status = $"Moved {file.Name} to position {destination + 1} of {_files.Count}.";
+        _hasError = false;
+    }
+
+    private async Task MergeAndDownload()
+    {
+        if (_files.Count == 0)
+        {
+            return;
+        }
+
+        if (_files.Any(file => file.Size > PdfMergeBrowserService.MaxFileSize))
+        {
+            _status = "A selected PDF exceeds the 100 MB per-file limit.";
+            _hasError = true;
+            return;
+        }
+        if (_files.Sum(file => file.Size) > PdfMergeBrowserService.MaxTotalSize)
+        {
+            _status = "The selected PDFs exceed the 200 MB total limit.";
+            _hasError = true;
+            return;
+        }
+
+        _isMerging = true;
+        _hasError = false;
+        _status = "Reading and merging PDFs…";
+        await InvokeAsync(StateHasChanged);
+        await Task.Yield();
+
+        try
+        {
+            var inputStreams = new List<MemoryStream>(_files.Count);
+            try
+            {
+                foreach (var file in _files)
+                {
+                    var stream = new MemoryStream();
+                    inputStreams.Add(stream);
+                    await using var browserStream = file.OpenReadStream(PdfMergeBrowserService.MaxFileSize);
+                    await browserStream.CopyToAsync(stream);
+                    stream.Position = 0;
+                }
+
+                var mergedPdf = PdfMergeBrowserService.Merge(inputStreams);
+                using var output = new MemoryStream(mergedPdf, writable: false);
+                using var downloadStream = new DotNetStreamReference(output);
+                await JS.InvokeVoidAsync(DownloadHelper, "merged.pdf", downloadStream);
+                _status = $"Merged {_files.Count} PDF file(s). Download started.";
+            }
+            finally
+            {
+                foreach (var stream in inputStreams)
+                {
+                    await stream.DisposeAsync();
+                }
+            }
+        }
+        catch (Exception exception) when (exception is IOException or ArgumentException or PdfMergeException or JSException)
+        {
+            _status = exception is IOException && exception.Message.Contains("larger than", StringComparison.OrdinalIgnoreCase)
+                ? "A selected PDF exceeds the 100 MB per-file limit."
+                : $"Merge failed: {exception.Message}";
+            _hasError = true;
+        }
+        finally
+        {
+            _isMerging = false;
+        }
+    }
+
+    private static string FormatSize(long size) => size switch
+    {
+        < 1024 => $"{size} B",
+        < 1024 * 1024 => $"{size / 1024d:0.#} KB",
+        _ => $"{size / (1024d * 1024d):0.#} MB",
+    };
+}

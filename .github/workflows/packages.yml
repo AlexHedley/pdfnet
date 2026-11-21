@@ -1,0 +1,130 @@
+name: Packages
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      version:
+        description: Validated release version; empty uses the project version
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  verify:
+    uses: ./.github/workflows/ci.yml
+    with:
+      version: ${{ inputs.version }}
+
+  native:
+    name: Package apps (${{ matrix.rid }})
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-x64
+          - os: macos-latest
+            rid: osx-arm64
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish self-contained apps
+        shell: bash
+        env:
+          RID: ${{ matrix.rid }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          version_args=()
+          if [[ -n "$VERSION" ]]; then
+            version_args+=("-p:Version=$VERSION")
+          fi
+          dotnet publish src/PdfNet.Tui/PdfNet.Tui.csproj \
+            --configuration Release --runtime "$RID" --self-contained true \
+            "${version_args[@]}" --output artifacts/apps/tui
+          dotnet publish src/PdfNet.FolderMerge.cs \
+            --configuration Release --runtime "$RID" --self-contained true \
+            -p:PublishAot=false "${version_args[@]}" --output artifacts/apps/folder-merge
+          if [[ "$RID" == win-* ]]; then
+            for app in Wpf WinForms WinUI; do
+              dotnet publish "src/PdfNet.$app/PdfNet.$app.csproj" \
+                --configuration Release --runtime "$RID" --self-contained true \
+                "${version_args[@]}" --output "artifacts/apps/$app"
+            done
+          fi
+      - name: Archive Unix apps
+        if: runner.os != 'Windows'
+        shell: bash
+        env:
+          RID: ${{ matrix.rid }}
+        run: |
+          mkdir -p artifacts/packages
+          for app in tui folder-merge; do
+            tar -czf "artifacts/packages/pdfnet-$app-$RID.tar.gz" -C "artifacts/apps/$app" .
+          done
+      - name: Archive Windows apps
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/packages | Out-Null
+          foreach ($app in @('tui', 'folder-merge', 'Wpf', 'WinForms', 'WinUI')) {
+            Compress-Archive -Path "artifacts/apps/$app/*" -DestinationPath "artifacts/packages/pdfnet-$app-win-x64.zip"
+          }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: packages-${{ matrix.rid }}
+          path: artifacts/packages/
+          if-no-files-found: error
+
+  portable:
+    name: Package library and website
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Pack NuGet library, symbols, and terminal tool
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          version_args=()
+          if [[ -n "$VERSION" ]]; then
+            version_args+=("-p:Version=$VERSION")
+          fi
+          dotnet pack src/PdfNet/PdfNet.csproj --configuration Release \
+            "${version_args[@]}" --include-symbols -p:SymbolPackageFormat=snupkg \
+            --output artifacts/packages
+          dotnet pack src/PdfNet.Tui/PdfNet.Tui.csproj --configuration Release \
+            "${version_args[@]}" --output artifacts/packages
+      - uses: actions/download-artifact@v8
+        with:
+          name: website
+          path: artifacts/website
+      - name: Archive WASM site and API documentation
+        working-directory: artifacts/website
+        run: zip -qr ../packages/pdfnet-website.zip .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: packages-portable
+          path: artifacts/packages/
+          if-no-files-found: error

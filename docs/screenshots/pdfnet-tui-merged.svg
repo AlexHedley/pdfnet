@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="640" viewBox="0 0 1000 640">
+  <rect width="1000" height="640" fill="#171923"/>
+  <path d="M0 0h1000v44H0z" fill="#2d3748"/>
+  <circle cx="24" cy="22" r="7" fill="#fc8181"/>
+  <circle cx="48" cy="22" r="7" fill="#f6e05e"/>
+  <circle cx="72" cy="22" r="7" fill="#68d391"/>
+  <text x="500" y="28" fill="#cbd5e0" font-family="monospace" font-size="15" text-anchor="middle">PDFnet — PDF Merger</text>
+  <g fill="#e2e8f0" font-family="monospace" font-size="18">
+    <text x="56" y="100">PDFnet — PDF Merger</text>
+    <text x="56" y="145"><tspan fill="#67e8f9">Inputs:</tspan> 2</text>
+    <text x="56" y="178">  1. /tmp/pdfnet-demo/second.pdf</text>
+    <text x="56" y="211">  2. /tmp/pdfnet-demo/first.pdf</text>
+    <text x="56" y="247"><tspan fill="#67e8f9">Output:</tspan> /tmp/pdfnet-demo/merged.pdf</text>
+    <text x="56" y="302">1. Add PDF</text>
+    <text x="56" y="335">2. Move PDF</text>
+    <text x="56" y="368">3. Remove last PDF</text>
+    <text x="56" y="401">4. Set output folder</text>
+    <text x="56" y="434">5. Merge PDFs</text>
+    <text x="56" y="467">6. Exit</text>
+    <text x="56" y="524" fill="#68d391">Select an option: 5</text>
+    <text x="56" y="567" fill="#68d391">Merged 2 PDF(s) to /tmp/pdfnet-demo/merged.pdf.</text>
+  </g>
+</svg>

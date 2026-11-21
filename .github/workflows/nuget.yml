@@ -1,0 +1,103 @@
+name: Publish NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package SemVer without v, for example 0.1.0 or 0.2.0-rc.1'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nuget-publish
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  pack:
+    name: Validate, test, and pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate version and branch
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          [[ "$GITHUB_REF" == refs/heads/main ]] || { echo "::error::Publish from main only"; exit 1; }
+          pattern='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+)(\.[0-9A-Za-z-]+)*)?$'
+          [[ "$VERSION" =~ $pattern ]] || { echo "::error::Invalid package version"; exit 1; }
+          if [[ "$VERSION" == *-* ]]; then
+            IFS=. read -ra identifiers <<< "${VERSION#*-}"
+            for identifier in "${identifiers[@]}"; do
+              if [[ "$identifier" =~ ^[0-9]+$ && "$identifier" =~ ^0[0-9]+$ ]]; then
+                echo "::error::Numeric prerelease identifiers cannot have leading zeroes"
+                exit 1
+              fi
+            done
+          fi
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Test
+        run: dotnet test tests/PdfNet.Tests/PdfNet.Tests.csproj --configuration Release
+      - name: Pack library, symbols, and terminal tool
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          dotnet pack src/PdfNet/PdfNet.csproj --configuration Release \
+            -p:Version="$VERSION" --include-symbols -p:SymbolPackageFormat=snupkg \
+            --output artifacts/nuget
+          dotnet pack src/PdfNet.Tui/PdfNet.Tui.csproj --configuration Release \
+            -p:Version="$VERSION" --output artifacts/nuget
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nuget-packages
+          path: artifacts/nuget/
+          if-no-files-found: error
+
+  publish:
+    name: Publish to NuGet.org
+    needs: pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-packages
+          path: artifacts/nuget
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Validate NuGet account configuration
+        env:
+          NUGET_USER: ${{ secrets.NUGET_USER }}
+        run: |
+          [[ -n "$NUGET_USER" ]] || { echo "::error::Configure the NUGET_USER variable in the nuget environment"; exit 1; }
+      - name: Authenticate with NuGet Trusted Publishing
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Push library and tool
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        shell: bash
+        run: |
+          [[ -n "$NUGET_API_KEY" ]] || { echo "::error::NuGet Trusted Publishing did not return a publishing token"; exit 1; }
+          for package in artifacts/nuget/*.nupkg; do
+            dotnet nuget push "$package" --api-key "$NUGET_API_KEY" \
+              --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done

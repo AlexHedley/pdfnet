@@ -1,0 +1,87 @@
+name: Deploy Pages
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy WASM, documentation, and dependency report
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Skip superseded builds
+        id: current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          latest="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)"
+          if [[ "$latest" == "$RUN_SHA" ]]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Skipping superseded main build $RUN_SHA"
+          fi
+      - uses: actions/download-artifact@v8
+        if: steps.current.outputs.deploy == 'true'
+        with:
+          name: website
+          path: site
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Read Pages configuration
+        if: steps.current.outputs.deploy == 'true'
+        id: pages
+        uses: actions/configure-pages@v6
+      - name: Set deployment base path and SPA fallback
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html
+          import os
+          from pathlib import Path
+
+          index = Path("site/index.html")
+          content = index.read_text()
+          assert content.count('<base href="/" />') == 1, "Expected one WASM base element"
+          base = os.environ["BASE_PATH"].rstrip("/") + "/"
+          index.write_text(content.replace('<base href="/" />', f'<base href="{html.escape(base, quote=True)}" />'))
+          for suffix in (".br", ".gz"):
+            Path(f"site/index.html{suffix}").unlink(missing_ok=True)
+          Path("site/404.html").write_text(index.read_text())
+          Path("site/.nojekyll").touch()
+          PY
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.current.outputs.deploy == 'true'
+        with:
+          path: site
+      - name: Deploy
+        if: steps.current.outputs.deploy == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v5

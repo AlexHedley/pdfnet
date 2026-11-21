@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="176" viewBox="0 0 760 176" role="img" aria-labelledby="title description">
+  <title id="title">PdfNet</title>
+  <desc id="description">PdfNet PDF tools logo</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#26734c"/>
+      <stop offset="1" stop-color="#164b38"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d8eee0"/>
+      <stop offset="1" stop-color="#9ac8aa"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(8 8)">
+    <rect width="160" height="160" rx="38" fill="url(#background)"/>
+    <path d="M23 39h26l10 10v43H23zM23 94h26l10 10v34H23z" fill="#e4f1e7"/>
+    <path d="M49 39v11h10M49 94v11h10" fill="none" stroke="#78a987" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path d="M30 59h18M30 68h18M30 112h18M30 121h18M59 66h9c13 0 13 13 26 13h8M59 119h9c13 0 13-13 26-13h8" fill="none" stroke="#78a987" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path d="m98 74 7 5-7 5m0 25 7 5-7 5" fill="none" stroke="#5aa878" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path d="M110 51h34l10 10v69h-44z" fill="#fff"/>
+    <path d="M144 51v11h10" fill="url(#fold)"/>
+    <path d="M119 83h15M119 92h15M119 101h25M119 110h25" fill="none" stroke="#26734c" stroke-linecap="round" stroke-width="4"/>
+  </g>
+  <text x="202" y="115" fill="#17241d" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="90" font-weight="750" letter-spacing="-5">PdfNet</text>
+  <text x="558" y="110" fill="#438565" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="3">PDF TOOLS</text>
+</svg>

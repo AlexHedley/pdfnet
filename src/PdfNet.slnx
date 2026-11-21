@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="PdfNet/PdfNet.csproj" />
+    <Project Path="PdfNet.Tui/PdfNet.Tui.csproj" />
+    <Project Path="PdfNet.Wpf/PdfNet.Wpf.csproj" />
+    <Project Path="PdfNet.WinForms/PdfNet.WinForms.csproj" />
+    <Project Path="PdfNet.WinUI/PdfNet.WinUI.csproj">
+      <Platform Solution="Debug|x64" Project="x64" />
+    </Project>
+    <Project Path="PdfNet.Wasm/PdfNet.Wasm.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="../tests/PdfNet.Tests/PdfNet.Tests.csproj" />
+  </Folder>
+</Solution>

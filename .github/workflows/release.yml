@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'SemVer without v, for example 0.1.0 or 0.2.0-rc.1'
+        required: true
+        type: string
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.inputs.version || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    name: Validate release version
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Validate SemVer and tag
+        id: version
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          EVENT_NAME: ${{ github.event_name }}
+        shell: bash
+        run: |
+          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then
+            [[ "$GITHUB_REF" == refs/heads/main ]] || { echo "::error::Release from main only"; exit 1; }
+            version="$REQUESTED_VERSION"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          pattern='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+)(\.[0-9A-Za-z-]+)*)?$'
+          [[ "$version" =~ $pattern ]] || { echo "::error::Invalid release version"; exit 1; }
+          if [[ "$version" == *-* ]]; then
+            IFS=. read -ra identifiers <<< "${version#*-}"
+            for identifier in "${identifiers[@]}"; do
+              if [[ "$identifier" =~ ^[0-9]+$ && "$identifier" =~ ^0[0-9]+$ ]]; then
+                echo "::error::Numeric prerelease identifiers cannot have leading zeroes"
+                exit 1
+              fi
+            done
+          fi
+          if [[ "$EVENT_NAME" == workflow_dispatch ]] && git show-ref --verify --quiet "refs/tags/v$version"; then
+            [[ "$(git rev-list -n 1 "v$version")" == "$GITHUB_SHA" ]] || {
+              echo "::error::Existing tag points to another commit; tags are never moved"
+              exit 1
+            }
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+  packages:
+    needs: version
+    uses: ./.github/workflows/packages.yml
+    with:
+      version: ${{ needs.version.outputs.version }}
+
+  release:
+    name: Tag and publish GitHub release
+    needs: [version, packages]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: packages-*
+          merge-multiple: true
+          path: release-assets
+      - name: Generate checksums
+        working-directory: release-assets
+        run: sha256sum -- * > SHA256SUMS
+      - name: Create annotated tag for manual releases
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ needs.version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            [[ "$(git rev-list -n 1 "$TAG")" == "$GITHUB_SHA" ]] || {
+              echo "::error::Existing tag points to another commit"
+              exit 1
+            }
+          else
+            git tag -a "$TAG" "$GITHUB_SHA" -m "Release $TAG"
+            git push origin "$TAG"
+          fi
+      - name: Publish release with generated notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.version.outputs.tag }}
+          VERSION: ${{ needs.version.outputs.version }}
+        shell: bash
+        run: |
+          flags=()
+          if [[ "$VERSION" == *-* ]]; then
+            flags+=(--prerelease --latest=false)
+          fi
+          gh release create "$TAG" release-assets/* --verify-tag \
+            --title "PdfNet $TAG" --generate-notes "${flags[@]}"
